@@ -1,23 +1,25 @@
-"""
-URL configuration for ACGN_Project project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include # 導入個人應用程式
+from django.conf import settings
+
+from . import views  # 導入專案的 views.py(自己手動建的)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('home.urls'))
+
+    
+    # 預設路徑(http://127.0.0.1:8000/)時
+    # 去找專案資料夾下的views.py(自己手動建的)的 index 函數
+    path('', views.index, name='index'),
+
+
+    # http://127.0.0.1:8000/<str:template_name>.html 
+    # 以確保操作index時其餘頁面都能正常連結到
+    path('<str:template_name>.html', views.render_template, name='render_template'),
+    
+
+    # http://127.0.0.1:8000/Example_APP/ 
+    # 假設我們各自導入自己的應用程式(Example_APP)個人操作的模樣
+    path('Example_APP/', include('Example_APP.urls')),
+
 ]
